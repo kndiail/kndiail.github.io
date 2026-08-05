@@ -1,0 +1,44 @@
+<%
+    // Compute the same values layout.ejs does, since partials don't
+    // inherit the parent's local variables.
+    let seoDesc = config.description || '';
+    if (page.description) {
+        seoDesc = page.description;
+    } else if (page.excerpt) {
+        seoDesc = strip_html(page.excerpt).replace(/\n/g, ' ').substring(0, 200).trim();
+    } else if (is_post() && page.content) {
+        seoDesc = strip_html(page.content).replace(/\n/g, ' ').substring(0, 200).trim();
+    }
+    let seoImg = (theme.seo && theme.seo.default_image) || theme.avatar;
+    if (page.photos && page.photos.length) seoImg = page.photos[0];
+    else if (page.cover) seoImg = page.cover;
+    if (seoImg && !seoImg.startsWith('http')) seoImg = config.url + url_for(seoImg);
+
+    let ld;
+    if (is_post() || is_page()) {
+        const pDate = page.date;
+        const pUpdated = page.updated;
+        ld = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: page.title,
+            description: seoDesc,
+            datePublished: pDate && pDate.toISOString ? pDate.toISOString() : String(pDate || ""),
+            dateModified: pUpdated && pUpdated.toISOString ? pUpdated.toISOString() : String(pUpdated || ""),
+            author: { "@type": "Person", name: config.author },
+            image: seoImg,
+            url: full_url_for(page.path || path),
+            mainEntityOfPage: full_url_for(page.path || path),
+            publisher: { "@type": "Person", name: config.author },
+        };
+    } else {
+        ld = {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: config.title,
+            url: config.url,
+        };
+    }
+    const ldJson = JSON.stringify(ld).replace(/<\//g, "<\\/");
+%>
+<script type="application/ld+json"><%= ldJson %></script>

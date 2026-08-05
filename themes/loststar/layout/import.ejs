@@ -15,8 +15,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
 <link
+    id="hl-light"
     rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/<%- theme.highlight.style %>.min.css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<link
+    id="hl-dark"
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+    disabled
 />
 <script src="<%- url_for("/js/lib/highlight.js") %>"></script>
 <% } %>
@@ -56,4 +63,6 @@
 <% if (theme.stars && theme.stars.enable) { %>
 <script src="<%- url_for("/js/lib/stars.js") %>"></script>
 <% } %>
+<script src="<%- url_for("/js/theme.js") %>"></script>
 <link rel="stylesheet" href="<%- url_for("/css/main.css") %>" />
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.min.js"></script>

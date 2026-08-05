@@ -66,3 +66,28 @@ app.mount("#layout");
         }
     });
 })();
+
+// Reading progress bar
+(function readingProgress() {
+    const bar = document.getElementById("reading-progress");
+    if (!bar) return;
+    const update = () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+        bar.style.width = pct + "%";
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+})();
+
+// Chapter TOC toggle
+(function chapterToc() {
+    const toggle = document.querySelector(".chapter-toc-toggle");
+    const list = document.querySelector(".chapter-toc-list");
+    if (!toggle || !list) return;
+    toggle.addEventListener("click", () => {
+        list.classList.toggle("open");
+        toggle.classList.toggle("open");
+    });
+})();

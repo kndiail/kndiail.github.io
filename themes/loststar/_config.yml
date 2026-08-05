@@ -43,33 +43,16 @@ taxonomy_styles:
 
   # Per-category styling (drives post bg/text + category chip color)
   categories:
-    "Tâm trí lang thang":
+    "小说":
       post:
-        bg: "#F1F8D1"
-        text: "#CFDF8D"
+        bg: "#fbf8f3"
+        text: "#2f3338"
       category:
-        bg: "#CFDF8D"
-        text: "#3a4a1a"
+        bg: "#2f3338"
+        text: "#fbf8f3"
       tag_default:
-        bg: "#e6f0b8"
-        text: "#3a4a1a"
-      effects:
-        outline:
-          enable: true
-          color: "#CFDF8D66"
-          width: "1px"
-        spark:
-          enable: false
-    "Giấc mơ thần tiên":
-      post:
-        bg: "#fff9e3"
-        text: "#382615"
-      category:
-        bg: "#b694d0"
-        text: "#2b173b"
-      tag_default:
-        bg: "#e8d5f5"
-        text: "#382615"
+        bg: "#e9e4da"
+        text: "#4a4a44"
       effects:
         outline:
           enable: false
@@ -78,12 +61,6 @@ taxonomy_styles:
 
   # Per-tag overrides (overrides category tag_default for specific tags)
   tags:
-    "Tâm trí lang thang":
-      bg: "#d6e499"
-      text: "#233213"
-    "Giấc mơ thần tiên":
-      bg: "#c8a3e3"
-      text: "#2b173b"
 
 # ParticleX theme icon is adopts the Font Awesome 6
 # https://fontawesome.com
@@ -94,6 +71,10 @@ menu:
     name: house
     theme: solid
     link: /
+  小说:
+    name: book
+    theme: solid
+    link: /novel/
   关于:
     name: id-card
     theme: solid
@@ -115,7 +96,7 @@ menu:
 card:
   enable: true
   description: |
-    Ánh sao lạc lối
+    栖灯旧话 · 迷路的字
   iconLinks:
   friendLinks:
 
@@ -161,32 +142,34 @@ crypto:
 
 # Search
 search:
-  enable: false
+  enable: true
 
 # giscus
 # https://github.com/giscus/giscus
+# 启用前：1) GitHub 仓库打开 Discussions；2) 去 giscus.app 填 repo 生成
+# repoID/categoryID 填入下方。
 giscus:
   enable: false
   src: https://giscus.app/client.js
-  repo:
-  repoID:
-  category:
-  categoryID:
+  repo: kndiail/kndiail.github.io
+  repoID: # 从 giscus.app 获取
+  category: Announcements
+  categoryID: # 从 giscus.app 获取
   mapping: pathname
   strict: 0
   reactionsEnabled: 1
   emitMetadata: 0
   inputPosition: bottom
   theme: preferred_color_scheme
-  lang:
+  lang: zh-CN
 
 # Internationalization (i18n)
 # Override any text displayed in the theme
 i18n:
-  read_more: Đọc thêm
-  loading_title: LOADING
-  loading_message: Vui lòng chờ một chút...
-  crypto_placeholder: Bài viết được mã hóa. Nhập mật khẩu.
+  read_more: 阅读全文
+  loading_title: 正在加载
+  loading_message: 请稍候…
+  crypto_placeholder: 本文已加密，请输入密码。
 
 # Gitalk
 # https://github.com/gitalk/gitalk

@@ -4,6 +4,7 @@
     if (is_post() || is_page()) type = "post";
     if (is_category() || page.type === "categories") type = "categories";
     if (is_tag() || page.type === "tags") type = "tags";
+    if (page.type === "novel") type = "novel";
     if (is_archive()) type = "archives";
     let title = page.title + " | " + config.title;
     if (is_home()) title = config.title;
@@ -55,6 +56,21 @@
 <html lang="<%- config.language %>">
 <head>
     <meta charset="utf-8" />
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem("theme") || "system";
+                var d =
+                    t === "dark" ||
+                    (t === "system" &&
+                        window.matchMedia &&
+                        window.matchMedia("(prefers-color-scheme: dark)").matches);
+                document.documentElement.setAttribute("data-theme", d ? "dark" : "light");
+            } catch (e) {}
+        })();
+    </script>
+    <meta name="theme-color" content="#fffdfa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#12151b" media="(prefers-color-scheme: dark)" />
     <title><%= title %></title>
     <meta name="author" content="<%- config.author %>" />
 
@@ -75,9 +91,14 @@
         content="width=device-width, initial-scale=1.0"
     />
     <link rel="icon" href="<%- url_for(theme.avatar) %>" />
+    <%- partial("jsonld") %>
     <%- partial("import", { type }) %>
 </head>
 <body>
+    <div id="reading-progress"></div>
+    <button type="button" class="theme-toggle" data-mode="system" aria-label="切换主题">
+        <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+    </button>
     <div id="layout">
         <transition name="fade">
             <div id="loading" v-show="loading">

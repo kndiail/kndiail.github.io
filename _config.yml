@@ -8,8 +8,8 @@ subtitle: '记录技术学习与生活随笔的个人博客'
 description: 'Kndiail 的个人博客，记录技术学习、开发实践与生活思考。'
 keywords: 'Kndiail, Hexo, 博客, 技术, 前端, 开发'
 author: Kndiail
-language: cn
-timezone: 'asia/shanghai'
+language: zh-CN
+timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://kndiail.github.io/project'
@@ -126,3 +126,12 @@ music:
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# Sitemap & Feed
+sitemap:
+  path: sitemap.xml
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  content: true

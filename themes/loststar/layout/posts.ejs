@@ -92,7 +92,11 @@
             <% } else if (post.excerpt) { %>
             <%- renderDiscordEmoji(post.excerpt) %>
             <% } else { %>
-            <%- renderDiscordEmoji(post.content) %>
+            <%
+                const t = strip_html(post.content).replace(/\s+/g, " ").trim();
+                const teaser = t.substring(0, 140);
+            %>
+            <%= teaser %><%= t.length > 140 ? "…" : "" %>
             <% } %>
         </div>
     </div>

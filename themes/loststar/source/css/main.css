@@ -1132,3 +1132,340 @@ ol li {
     opacity: var(--fx-spark-opacity, 0.35);
   }
 }
+
+/* ===== Reading progress bar ===== */
+#reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: linear-gradient(90deg, #fbc2eb, #a6c1ee);
+  z-index: 9999;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+/* ===== Reading stats chip ===== */
+.reading-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 18px 0 8px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: rgba(230, 239, 255, 0.6);
+  color: #5c6b72;
+  font-size: 13px;
+}
+
+/* ===== Chapter navigation ===== */
+.chapter-nav {
+  margin-top: 40px;
+  border-top: 1px solid #e4e7f0;
+  padding-top: 20px;
+}
+.chapter-toc {
+  margin-bottom: 16px;
+}
+.chapter-toc-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e4e7f0;
+  border-radius: 10px;
+  background: #f8f9fd;
+  color: #3a3f58;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.chapter-toc-toggle .chapter-toc-arrow {
+  margin-left: auto;
+  transition: transform 0.25s;
+}
+.chapter-toc-toggle.open .chapter-toc-arrow {
+  transform: rotate(180deg);
+}
+.chapter-toc-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.chapter-toc-list.open {
+  max-height: 480px;
+  overflow-y: auto;
+}
+.chapter-toc-list li {
+  margin: 2px 0;
+}
+.chapter-toc-list li a {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: #5c6b72;
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
+.chapter-toc-list li a:hover {
+  background: #eef2f9;
+  color: #3a3f58;
+}
+.chapter-toc-list li.current a {
+  background: rgba(166, 193, 238, 0.25);
+  color: #2f5e9e;
+  font-weight: 600;
+}
+.chapter-toc-list .ch-num {
+  min-width: 28px;
+  font-variant-numeric: tabular-nums;
+  color: #9aa0b5;
+  font-size: 12px;
+}
+.chapter-pager {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+.pager-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #e4e7f0;
+  background: #f8f9fd;
+  color: #3a3f58;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.pager-btn:hover {
+  border-color: #a6c1ee;
+  box-shadow: 0 4px 14px rgba(166, 193, 238, 0.25);
+  transform: translateY(-1px);
+}
+.pager-btn.next {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.pager-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.pager-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.pager-label small {
+  color: #9aa0b5;
+  font-size: 12px;
+}
+.pager-label strong {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== Immersive reading typography ===== */
+.article .content {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  font-size: 17px;
+  line-height: 2.05;
+  letter-spacing: 0.01em;
+  color: inherit;
+}
+.article {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.article .content p {
+  margin: 0 0 1.1em;
+  text-align: justify;
+}
+.article .content h1,
+.article .content h2,
+.article .content h3 {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", serif;
+  margin: 1.6em 0 0.8em;
+  line-height: 1.5;
+}
+
+/* ===== Theme toggle button ===== */
+.theme-toggle {
+  position: fixed;
+  right: 22px;
+  bottom: 96px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(60, 64, 90, 0.18);
+  color: #5a5f78;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 98;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+.theme-toggle:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== Novel TOC page ===== */
+.novel-title {
+  text-align: center;
+  margin-bottom: 8px;
+}
+.novel-subtitle {
+  text-align: center;
+  color: #9aa3af;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+.novel-list {
+  max-width: 720px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.novel-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #e4e7f0;
+  background: #f8f9fd;
+  color: #3a3f58;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.novel-item:hover {
+  border-color: #a6c1ee;
+  box-shadow: 0 4px 14px rgba(166, 193, 238, 0.25);
+  transform: translateY(-2px);
+}
+.novel-num {
+  font-size: 12px;
+  color: #9aa0b5;
+}
+.novel-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+html[data-theme="dark"] .novel-item {
+  background: #1f232c;
+  border-color: #2c313a;
+  color: #d8dee9;
+}
+html[data-theme="dark"] .novel-num {
+  color: #8a93a6;
+}
+
+/* ===== Dark mode ===== */
+html[data-theme="dark"] body {
+  background: #12151b;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] .loading,
+html[data-theme="dark"] #home-posts .post,
+html[data-theme="dark"] #home-card #card-style,
+html[data-theme="dark"] .article {
+  background: #12151b;
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] p,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] .post-title,
+html[data-theme="dark"] #home-card #card-div .name,
+html[data-theme="dark"] .article h1,
+html[data-theme="dark"] .article .content {
+  color: #d8dee9;
+}
+html[data-theme="dark"] #home-posts .post,
+html[data-theme="dark"] #home-card #card-style {
+  background: #1a1d24;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+  color: #d8dee9;
+}
+html[data-theme="dark"] #home-card #card-div .description,
+html[data-theme="dark"] #home-posts .post .category-and-date,
+html[data-theme="dark"] #archives,
+html[data-theme="dark"] #footer #footer-wrap,
+html[data-theme="dark"] .article .info,
+html[data-theme="dark"] .article .info a,
+html[data-theme="dark"] .reading-stats,
+html[data-theme="dark"] .chapter-toc-list li a,
+html[data-theme="dark"] .pager-label small {
+  color: #9aa3af;
+}
+html[data-theme="dark"] #menu {
+  background: rgba(18, 21, 27, 0.92);
+}
+html[data-theme="dark"] #menu a,
+html[data-theme="dark"] #menu .title {
+  color: #e2e8f0;
+}
+html[data-theme="dark"] .chapter-toc-toggle,
+html[data-theme="dark"] .pager-btn,
+html[data-theme="dark"] .reading-stats,
+html[data-theme="dark"] .chapter-toc-list li a:hover {
+  background: #1f232c;
+  border-color: #2c313a;
+  color: #d8dee9;
+}
+html[data-theme="dark"] .chapter-toc-list li.current a {
+  background: rgba(166, 193, 238, 0.2);
+  color: #9cc0ef;
+}
+html[data-theme="dark"] .theme-toggle {
+  background: #1f232c;
+  color: #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Dark mode: override taxonomy inline CSS variables.
+   Inline style="--tx-*" beats normal rules, so use !important. */
+html[data-theme="dark"] .article,
+html[data-theme="dark"] .post {
+  --tx-post-bg: #1a1d24 !important;
+  --tx-post-text: #d8dee9 !important;
+  --tx-cat-bg: #2c313a !important;
+  --tx-cat-text: #9fb3c8 !important;
+  --tx-title-color: #c8d6e5 !important;
+  --tx-heading-color: #c8d6e5 !important;
+  --tx-title-glow: none !important;
+}
+
+/* Dark mode: reading progress + content tweaks */
+html[data-theme="dark"] .chapter-nav {
+  border-top-color: #2c313a;
+}
+html[data-theme="dark"] .article .content {
+  color: #d8dee9;
+}
+}

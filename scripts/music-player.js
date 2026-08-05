@@ -24,20 +24,14 @@
 
 const PLAYER_CSS = `
 /* ===== Music player beautification ===== */
-/* The outer .aplayer is just a wrapper (its fixed body is what is shown).
-   Keep it non-disruptive; position the fixed body with an offset. */
+/* Colors are tokenized (--mp-*) so dark mode can override them via
+   html[data-theme="dark"] on :root/documentElement without touching
+   this injected stylesheet. Light defaults equal the original values. */
 .aplayer.aplayer-fixed {
-  /* Keep APlayer's fold mechanism: the info panel is collapsed via
-     scaleX(0), so overflow must stay visible. */
   overflow: visible;
   border-radius: 16px;
   z-index: 99;
 }
-/* Offset + glass look live on the fixed body, the element actually shown.
-   NOTE: do NOT add padding or a real border here — APlayer measures
-   offsetWidth of the body (minus 18px) and writes it back as an inline
-   width, so padding/border skew that measurement and squash the info
-   panel. Use box-shadow to simulate a border instead. */
 .aplayer.aplayer-fixed .aplayer-body {
   right: auto !important;
   left: 18px !important;
@@ -46,17 +40,14 @@ const PLAYER_CSS = `
   border-radius: 16px;
   overflow: visible;
   border: none;
-  background: rgba(255, 255, 255, 0.88) !important;
+  background: var(--mp-body-bg, rgba(255, 255, 255, 0.88)) !important;
   backdrop-filter: blur(16px) saturate(1.3);
   -webkit-backdrop-filter: blur(16px) saturate(1.3);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75), 0 12px 40px rgba(60, 64, 90, 0.18), 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 1px var(--mp-body-border, rgba(255, 255, 255, 0.75)), 0 12px 40px var(--mp-shadow, rgba(60, 64, 90, 0.18)), 0 2px 10px rgba(0, 0, 0, 0.08);
 }
-/* Round the picture (album art) */
 .aplayer.aplayer-fixed .aplayer-pic {
   border-radius: 15px 0 0 15px;
 }
-
-/* Info / titles */
 .aplayer.aplayer-fixed .aplayer-info {
   padding: 12px 16px 10px 14px;
 }
@@ -65,72 +56,61 @@ const PLAYER_CSS = `
 }
 .aplayer.aplayer-fixed .aplayer-info .aplayer-music .aplayer-title {
   font-weight: 600;
-  color: #3a3f58;
+  color: var(--mp-title, #3a3f58);
 }
 .aplayer.aplayer-fixed .aplayer-info .aplayer-music .aplayer-author {
-  color: #9aa0b5;
+  color: var(--mp-author, #9aa0b5);
   font-size: 12px;
 }
-
-/* Progress bar */
 .aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap {
   margin: 8px 0;
 }
 .aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-loaded {
-  background: rgba(180, 188, 210, 0.45) !important;
+  background: var(--mp-loaded, rgba(180, 188, 210, 0.45)) !important;
 }
 .aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played {
   background: linear-gradient(90deg, #fbc2eb 0%, #a6c1ee 100%) !important;
 }
 .aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap .aplayer-bar .aplayer-played .aplayer-thumb {
-  background: #b78fce !important;
-  border-color: #fff !important;
+  background: var(--mp-thumb, #b78fce) !important;
+  border-color: var(--mp-thumb-border, #fff) !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
-
-/* Control buttons */
 .aplayer .aplayer-info .aplayer-controller .aplayer-icon {
-  color: #5a5f78;
+  color: var(--mp-icon, #5a5f78);
 }
 .aplayer .aplayer-info .aplayer-controller .aplayer-icon:hover {
-  color: #b78fce;
+  color: var(--mp-icon-hover, #b78fce);
 }
 .aplayer .aplayer-info .aplayer-controller .aplayer-icon-play,
 .aplayer .aplayer-info .aplayer-controller .aplayer-icon-pause {
-  color: #8a6bb0;
+  color: var(--mp-accent, #8a6bb0);
 }
-
-/* Volume */
 .aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap .aplayer-volume-bar {
-  background: #e4e7f0;
+  background: var(--mp-vol-bg, #e4e7f0);
 }
 .aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap .aplayer-volume-bar .aplayer-volume {
   background: linear-gradient(180deg, #fbc2eb, #a6c1ee) !important;
 }
-
-/* Playlist */
 .aplayer .aplayer-list {
   border: none;
 }
 .aplayer .aplayer-list ol li {
-  border-top: 1px solid #f2f3f8;
-  color: #5a5f78;
+  border-top: 1px solid var(--mp-list-border, #f2f3f8);
+  color: var(--mp-list-text, #5a5f78);
 }
 .aplayer .aplayer-list ol li:hover {
-  background: rgba(246, 247, 252, 0.85);
+  background: var(--mp-list-hover, rgba(246, 247, 252, 0.85));
 }
 .aplayer .aplayer-list ol li.aplayer-list-light {
-  background: rgba(240, 235, 250, 0.55);
+  background: var(--mp-list-light, rgba(240, 235, 250, 0.55));
 }
 .aplayer .aplayer-list ol li.aplayer-list-light .aplayer-list-title {
-  color: #8a6bb0;
+  color: var(--mp-accent, #8a6bb0);
 }
 .aplayer .aplayer-list ol li .aplayer-list-index {
-  color: #b4b8ca;
+  color: var(--mp-list-index, #b4b8ca);
 }
-
-/* Narrow (collapsed) mini button: keep APlayer's native 66px geometry,
-   just skin it as a gradient circle. Do NOT change width/height/overflow. */
 .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
   border-radius: 50%;
   background: linear-gradient(135deg, #a18cd1, #fbc2eb) !important;
@@ -138,6 +118,25 @@ const PLAYER_CSS = `
 }
 .aplayer.aplayer-fixed.aplayer-narrow .aplayer-pic {
   border-radius: 50%;
+}
+html[data-theme="dark"] {
+  --mp-body-bg: rgba(24, 26, 32, 0.88);
+  --mp-body-border: rgba(255, 255, 255, 0.08);
+  --mp-shadow: rgba(0, 0, 0, 0.5);
+  --mp-title: #e6eaf2;
+  --mp-author: #8a93a6;
+  --mp-loaded: rgba(100, 108, 128, 0.45);
+  --mp-thumb: #b78fce;
+  --mp-thumb-border: #2c313a;
+  --mp-icon: #aab2c0;
+  --mp-icon-hover: #c9b2e0;
+  --mp-accent: #b78fce;
+  --mp-vol-bg: #3a3f4a;
+  --mp-list-border: #2c313a;
+  --mp-list-text: #aab2c0;
+  --mp-list-hover: rgba(40, 44, 54, 0.85);
+  --mp-list-light: rgba(48, 52, 64, 0.6);
+  --mp-list-index: #6b7280;
 }
 `;
 

@@ -1,0 +1,27 @@
+<div id="archives">
+    <%
+        // Build a numbered chapter list using the same helper as post pages.
+        // We need a sample post to derive the full ordered list.
+        let nav = null;
+        let firstChapter = null;
+        site.posts.some((p) => {
+            const n = getChapterNav(p);
+            if (n) { nav = n; firstChapter = p; return true; }
+            return false;
+        });
+    %>
+    <% if (nav) { %>
+    <h2 class="novel-title"><%= page.title %></h2>
+    <p class="novel-subtitle">共 <%= nav.total %> 章 · 按章节顺序排列</p>
+    <div class="novel-list">
+        <% nav.list.forEach((ch) => { %>
+        <a class="novel-item" href="<%- url_for(ch.path) %>">
+            <span class="novel-num">第 <%= ch.num %> 章</span>
+            <span class="novel-name"><%= ch.title.replace(/^不存在的街·第\d+章·/, "") %></span>
+        </a>
+        <% }); %>
+    </div>
+    <% } else { %>
+    <p>暂无章节。</p>
+    <% } %>
+</div>
