@@ -1476,6 +1476,12 @@ html[data-theme="dark"] .chapter-nav {
 html[data-theme="dark"] .article .content {
   color: #d8dee9;
 }
+/* Dark mode: home hero title sits on the background image, keep it dark
+   grey so it stays readable instead of the light body text colour. */
+html[data-theme="dark"] #home-head #home-info .info .wrap h1,
+html[data-theme="dark"] #home-head #home-info .info .wrap h3 {
+  color: #4a4a4a;
+}
 
 /* ===== Mobile (<480px) ===== */
 @media (max-width: 480px) {
