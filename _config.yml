@@ -113,8 +113,8 @@ theme: loststar
 ## admin 页会尝试拉取统计 API（可能受 CORS 限制，失败则回退不蒜子）。
 analytics:
   provider: umami
-  enabled: false          # 填好 websiteId 后改为 true
-  websiteId:              # Umami Cloud 站点 ID
+  enabled: true           # 已启用
+  websiteId: 6cf8d45a-3c70-4962-84e4-b93f447cf0b8   # Umami Cloud 站点 ID
   host: https://cloud.umami.is   # Umami 实例地址（免费版默认）
   apiBase: https://api.umami.is  # API 基地址（免费版默认）
 
