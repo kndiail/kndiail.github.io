@@ -241,17 +241,51 @@ hexo.extend.filter.register("after_render:html", function (html) {
       });
 
       /* --- continuous playback across tab switches --- */
-      var wasPlaying = false;
-      document.addEventListener('visibilitychange', function () {
+      /* Browsers throttle/pause audio when the tab is hidden. We want
+         music to keep playing across tab switches.
+         Strategy: whenever the audio pauses, we remember it; when the
+         page becomes visible again, if the audio was interrupted by a
+         browser throttle (tab hidden) rather than a user pause, resume.
+         To tell those apart reliably regardless of event ordering:
+         - a pause that happens while the page is already hidden, OR
+         - a pause followed (within ~1s) by the page hiding,
+         both indicate browser throttling → resume on return.
+         A user pause keeps the page visible and is not followed by a
+         hide, so we leave it paused. */
+      var resumeOnVisible = false;
+      var hideTimer = null;
+      function setupContinuousPlayback() {
         var el = document.querySelector('meting-js');
         var ap = el && el.aplayer ? el.aplayer : null;
-        if (!ap || !ap.audio) return;
-        if (document.visibilityState === 'hidden') {
-          wasPlaying = !ap.audio.paused && !ap.audio.ended;
-        } else if (document.visibilityState === 'visible' && wasPlaying && ap.audio.paused && !ap.audio.ended) {
-          ap.play().catch(function () {});
-        }
-      });
+        if (!ap || !ap.audio) { setTimeout(setupContinuousPlayback, 400); return; }
+        var audio = ap.audio;
+        audio.addEventListener('pause', function () {
+          // If already hidden → browser throttled us.
+          if (document.visibilityState === 'hidden') {
+            resumeOnVisible = true;
+            return;
+          }
+          // If visible, wait briefly: a browser throttle pauses the audio
+          // right around when the tab hides. If the page hides within a
+          // short window, treat this pause as throttling.
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () {
+            if (document.visibilityState === 'hidden') {
+              resumeOnVisible = true;
+            }
+          }, 600);
+        });
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'visible') {
+            clearTimeout(hideTimer);
+            if (resumeOnVisible && audio.paused && !audio.ended) {
+              ap.play().catch(function () {});
+            }
+            resumeOnVisible = false;
+          }
+        });
+      }
+      setupContinuousPlayback();
 
       /* --- fix APlayer fixed-mode body width ---
          APlayer writes body.style.width = offsetWidth - 18 on init,
