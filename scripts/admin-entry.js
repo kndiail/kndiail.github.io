@@ -21,9 +21,13 @@ function sha256(str) {
 hexo.extend.filter.register("after_render:html", function (html) {
   const cfg = this.config.admin || {};
   if (!cfg.enable) return html;
-  if (!cfg.password) return html;
 
-  const passwordHash = sha256(cfg.password);
+  // Password: prefer env var ADMIN_PASSWORD (GitHub Actions secret or
+  // locally exported); fall back to config. A placeholder means unset.
+  let password = process.env.ADMIN_PASSWORD || cfg.password || "";
+  if (!password || password === "__ADMIN_PASSWORD__") return html;
+
+  const passwordHash = sha256(password);
 
   // Inject the beacon script before </body> (idempotent).
   const beacon = `
@@ -51,12 +55,18 @@ hexo.extend.filter.register("after_render:html", function (html) {
     out = out.replace("</body>", beacon);
   }
 
-  // Inject the password hash + enable flag onto <body> for admin.js.
+  // Inject password hash + analytics config onto <body> for admin.js.
+  const an = this.config.analytics || {};
+  const anJson =
+    '{"provider":"' + (an.provider || "") +
+    '","enabled":' + !!(an.enabled && an.websiteId) +
+    ',"websiteId":"' + (an.websiteId || "") +
+    '","apiBase":"' + (an.apiBase || "") + '"}';
+  const bodyTag =
+    `<body data-admin='{"hash":"${passwordHash}"}' data-analytics='${anJson}'>`;
+
   if (!/data-admin=/.test(out)) {
-    out = out.replace(
-      "<body>",
-      `<body data-admin='{"hash":"${passwordHash}"}'>`
-    );
+    out = out.replace("<body>", bodyTag);
   }
 
   return out;

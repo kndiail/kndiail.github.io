@@ -107,6 +107,17 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: loststar
 
+# Analytics (Umami) — 访问统计
+## 接入真实访客统计：去 umami.is 注册 Cloud 免费版，创建一个站点，
+## 得到 websiteId。填入下方后，全站会加载 Umami 计数脚本，
+## admin 页会尝试拉取统计 API（可能受 CORS 限制，失败则回退不蒜子）。
+analytics:
+  provider: umami
+  enabled: false          # 填好 websiteId 后改为 true
+  websiteId:              # Umami Cloud 站点 ID
+  host: https://cloud.umami.is   # Umami 实例地址（免费版默认）
+  apiBase: https://api.umami.is  # API 基地址（免费版默认）
+
 # Music player (floating APlayer + Meting)
 ## Autoplay note: browsers block audio without user interaction,
 ## so playback starts on the user's first click anywhere on the page.
@@ -123,12 +134,12 @@ music:
   volume: 0.7
 
 # Admin dashboard (visit /admin/ to access, no visible nav link)
-## password: plaintext is compared via SHA-256 on the client.
-## NOTE: client-side auth is obfuscation only (not a real security
-## boundary) because static hosting has no backend. Change it before use.
+## The client only ever receives a SHA-256 hash of this password.
+## password is injected at build time via the ADMIN_PASSWORD env var
+## (GitHub Actions secret, or local export). Never commit a real password.
 admin:
   enable: true
-  password: admin123
+  password: __ADMIN_PASSWORD__   # placeholder — real value comes from env
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

@@ -350,6 +350,36 @@ hexo.extend.filter.register("after_render:html", function (html) {
         if (body && body.style && body.style.width) body.style.width = '';
       }
       fixBodyWidth();
+
+      /* --- fix mobile overlapping audio on page switches ---
+         Mobile Safari/Chrome use the bfcache: navigating back to a page
+         restores it (its <audio> is still alive) while the new page's
+         player also starts → two audios overlap. visibilitychange does
+         NOT fire for bfcache restores, so we handle pagehide/pageshow.
+         On pagehide: remember if playing and pause the audio (so a
+         restored copy is silent). On pageshow (persisted): resume. */
+      var wasPlayingOnHide = false;
+      function currentAp() {
+        var el = document.querySelector('meting-js');
+        return el && el.aplayer ? el.aplayer : null;
+      }
+      window.addEventListener('pagehide', function () {
+        var ap = currentAp();
+        if (ap && ap.audio) {
+          wasPlayingOnHide = !ap.audio.paused && !ap.audio.ended;
+          try { ap.pause(); } catch (e) {}
+        }
+      });
+      window.addEventListener('pageshow', function (e) {
+        // If restored from bfcache and it was playing, resume.
+        if (e.persisted && wasPlayingOnHide) {
+          var ap = currentAp();
+          if (ap && ap.audio && ap.audio.paused && !ap.audio.ended) {
+            try { ap.play().catch(function () {}); } catch (err) {}
+          }
+        }
+        wasPlayingOnHide = false;
+      });
     })();
   </script>
 </body>`;

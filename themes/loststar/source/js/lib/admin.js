@@ -72,6 +72,33 @@
     renderDashboard();
   }
 
+  // ---- Umami API fetch (best-effort; CORS may block) ----
+  async function tryUmami(an, pvEl, uvEl) {
+    try {
+      var url =
+        an.apiBase +
+        "/api/websites/" +
+        an.websiteId +
+        "/stats?startAt=" +
+        (Date.now() - 365 * 24 * 3600 * 1000) +
+        "&endAt=" +
+        Date.now();
+      var res = await fetch(url, {
+        headers: { "x-umami-share-token": "public" },
+      });
+      if (!res.ok) return;
+      var data = await res.json();
+      if (data && typeof data.pageviews === "number" && pvEl) {
+        pvEl.textContent = String(data.pageviews);
+      }
+      if (data && typeof data.visitors === "number" && uvEl) {
+        uvEl.textContent = String(data.visitors);
+      }
+    } catch (e) {
+      // CORS or network error → keep busuanzi values.
+    }
+  }
+
   function renderDashboard() {
     // busuanzi PV/UV (read from the footer spans if present)
     var pv = document.getElementById("busuanzi_value_site_pv");
@@ -86,6 +113,14 @@
       }
     }
     pollBusuanzi();
+
+    // ---- Umami stats (CORS may block; fall back to busuanzi if it fails) ----
+    try {
+      var an = JSON.parse(document.body.getAttribute("data-analytics") || "{}");
+      if (an.enabled && an.websiteId && an.apiBase) {
+        tryUmami(an, pvEl, uvEl);
+      }
+    } catch (e) {}
 
     // local visit stats
     var visits = [];
