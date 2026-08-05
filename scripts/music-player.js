@@ -370,6 +370,10 @@ hexo.extend.filter.register("after_render:html", function (html) {
         if (ap && ap.audio) {
           wasPlayingOnHide = !ap.audio.paused && !ap.audio.ended;
           try { ap.pause(); } catch (e) {}
+          // Save immediately so sessionStorage holds the true progress
+          // (beforeunload is unreliable for saving; the 5s interval may
+          // have stored an older position).
+          savePlayerState();
         }
       }
       // Clicking any <a> link that navigates away → stop audio immediately.
