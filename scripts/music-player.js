@@ -328,7 +328,7 @@ hexo.extend.filter.register("after_render:html", function (html) {
             window.__musicEverStarted = true;
             try { ap.play().catch(function () {}); } catch (e) {}
           };
-          setTimeout(resume, 500);
+          setTimeout(resume, 800);
           /* Wait for first user interaction to satisfy autoplay policy. */
           document.addEventListener('pointerdown', resume, { once: true });
           document.addEventListener('click', resume, { once: true });
@@ -352,23 +352,43 @@ hexo.extend.filter.register("after_render:html", function (html) {
       fixBodyWidth();
 
       /* --- fix mobile overlapping audio on page switches ---
-         Mobile Safari/Chrome use the bfcache: navigating back to a page
-         restores it (its <audio> is still alive) while the new page's
-         player also starts → two audios overlap. visibilitychange does
-         NOT fire for bfcache restores, so we handle pagehide/pageshow.
-         On pagehide: remember if playing and pause the audio (so a
-         restored copy is silent). On pageshow (persisted): resume. */
+         Root cause (forward nav): user clicks a link on page A while
+         audio plays → browser starts navigating; page A's <audio> stays
+         alive briefly (beforeunload can't pause it; pagehide may fire
+         late), while page B's player starts and also resumes from
+         sessionStorage → two audios overlap.
+         Fix: stop audio the moment a navigation link is clicked (best),
+         plus on visibilitychange/pagehide as backstops. Resume on the
+         new page is delayed so the old page has time to stop. */
       var wasPlayingOnHide = false;
       function currentAp() {
         var el = document.querySelector('meting-js');
         return el && el.aplayer ? el.aplayer : null;
       }
-      window.addEventListener('pagehide', function () {
+      function stopAudio() {
         var ap = currentAp();
         if (ap && ap.audio) {
           wasPlayingOnHide = !ap.audio.paused && !ap.audio.ended;
           try { ap.pause(); } catch (e) {}
         }
+      }
+      // Clicking any <a> link that navigates away → stop audio immediately.
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+        var link = t && t.closest ? t.closest('a[href]') : null;
+        if (link) {
+          var href = link.getAttribute('href') || '';
+          // Ignore #anchors, javascript:, and the player's own controls.
+          if (href.indexOf('#') !== 0 && href.indexOf('javascript:') !== 0 &&
+              !link.closest('.aplayer')) {
+            stopAudio();
+          }
+        }
+      }, true);
+      // Backstops: hide the page or hide the tab → stop.
+      window.addEventListener('pagehide', stopAudio);
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') stopAudio();
       });
       window.addEventListener('pageshow', function (e) {
         // If restored from bfcache and it was playing, resume.
