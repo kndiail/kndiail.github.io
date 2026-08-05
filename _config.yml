@@ -107,6 +107,19 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: loststar
 
+# Music player (floating APlayer + Meting)
+## Autoplay note: browsers block audio without user interaction,
+## so playback starts on the user's first click anywhere on the page.
+## Replace `playlistId` with your own netease playlist id.
+music:
+  enable: true
+  playlistId: 18220651517      # Blog Vellisnow榭樱迹雪 歌单
+  server: netease
+  api: https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&r=:r   # Meting API template
+  autoplay: true               # start playing after first user click
+  fixed: true                  # floating bottom-right player
+  volume: 0.7
+
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
