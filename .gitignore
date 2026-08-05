@@ -6,3 +6,6 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+
+# 本地一键上传脚本（不上传）
+git-upload.bat
