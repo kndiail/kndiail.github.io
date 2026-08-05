@@ -1483,6 +1483,129 @@ html[data-theme="dark"] #home-head #home-info .info .wrap h3 {
   color: #4a4a4a;
 }
 
+/* ===== Admin dashboard ===== */
+.admin-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+.admin-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(217, 217, 217, 0.5);
+  padding: 28px 30px;
+  margin-bottom: 24px;
+}
+.admin-card h2 {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+.admin-tip {
+  color: #9aa3af;
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+#admin-login-form {
+  display: flex;
+  gap: 10px;
+}
+#admin-password {
+  flex: 1;
+}
+.admin-btn {
+  padding: 10px 22px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(120deg, #9abbf7, #ffbbf4);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.admin-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(154, 187, 247, 0.4);
+}
+.admin-btn.danger {
+  background: #e05252;
+}
+.admin-msg {
+  color: #e05252;
+  font-size: 13px;
+  min-height: 18px;
+  margin: 10px 0 0;
+}
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.stat-box {
+  background: #f6f8fa;
+  border-radius: 12px;
+  padding: 18px 14px;
+  text-align: center;
+}
+.stat-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: #3a3f58;
+}
+.stat-label {
+  font-size: 12px;
+  color: #9aa3af;
+  margin-top: 6px;
+}
+.admin-section {
+  margin: 24px 0 0;
+}
+.admin-section h3 {
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.admin-table th,
+.admin-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eef0f5;
+  text-align: left;
+}
+.admin-table th {
+  color: #9aa3af;
+  font-weight: 600;
+}
+.admin-table td.mono {
+  font-family: "Fira Code", monospace;
+  font-size: 12px;
+}
+.admin-note {
+  font-size: 13px;
+  color: #9aa3af;
+  line-height: 1.8;
+}
+html[data-theme="dark"] .admin-card {
+  background: #1a1d24;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+}
+html[data-theme="dark"] .stat-box {
+  background: #232833;
+}
+html[data-theme="dark"] .stat-num {
+  color: #e6eaf2;
+}
+html[data-theme="dark"] .admin-table td {
+  border-bottom-color: #2c313a;
+}
+html[data-theme="dark"] .admin-tip,
+html[data-theme="dark"] .admin-note {
+  color: #8a93a6;
+}
+
 /* ===== Mobile (<480px) ===== */
 @media (max-width: 480px) {
   #main {

@@ -1,0 +1,75 @@
+<% const adminCfg = config.admin || {}; %>
+<div class="admin-wrap">
+    <div id="admin-login" class="admin-card">
+        <h2><i class="fa-solid fa-shield-halved fa-fw"></i> 管理员登录</h2>
+        <p class="admin-tip">请输入管理密码</p>
+        <form id="admin-login-form" autocomplete="off">
+            <input
+                id="admin-password"
+                class="input"
+                type="password"
+                placeholder="密码"
+                autocomplete="off"
+            />
+            <button type="submit" class="admin-btn">登 录</button>
+        </form>
+        <p id="admin-login-msg" class="admin-msg"></p>
+    </div>
+
+    <div id="admin-dashboard" class="admin-card" style="display: none">
+        <h2><i class="fa-solid fa-chart-line fa-fw"></i> 站点数据</h2>
+
+        <div class="admin-stats-grid">
+            <div class="stat-box">
+                <div class="stat-num" id="stat-pv">–</div>
+                <div class="stat-label">总访问量 (PV)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" id="stat-uv">–</div>
+                <div class="stat-label">总访客 (UV)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" id="stat-visits">0</div>
+                <div class="stat-label">本机访问次数</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-num" id="stat-today">0</div>
+                <div class="stat-label">今日本机访问</div>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h3><i class="fa-solid fa-user fa-fw"></i> 当前访问信息</h3>
+            <table class="admin-table">
+                <tbody>
+                    <tr><td>浏览器 / 系统</td><td id="admin-ua">–</td></tr>
+                    <tr><td>屏幕</td><td id="admin-screen">–</td></tr>
+                    <tr><td>语言</td><td id="admin-lang">–</td></tr>
+                    <tr><td>在线状态</td><td id="admin-online">–</td></tr>
+                    <tr><td>时区</td><td id="admin-tz">–</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="admin-section">
+            <h3><i class="fa-solid fa-clock-rotate-left fa-fw"></i> 本机浏览记录</h3>
+            <table class="admin-table">
+                <thead>
+                    <tr><th>时间</th><th>页面</th></tr>
+                </thead>
+                <tbody id="admin-visit-list"></tbody>
+            </table>
+            <button id="admin-clear" class="admin-btn danger">清空本机记录</button>
+        </div>
+
+        <div class="admin-section">
+            <h3><i class="fa-solid fa-circle-info fa-fw"></i> 说明</h3>
+            <p class="admin-note">
+                本站为纯静态托管，无法记录真实访客 IP 与跨访客日志。
+                上方的 PV / UV 来自不蒜子全局统计；下方为<strong>本浏览器</strong>
+                （localStorage）的访问记录。真实 IP 统计需接入第三方统计服务或
+                服务端，超出纯静态能力范围。
+            </p>
+        </div>
+    </div>
+</div>

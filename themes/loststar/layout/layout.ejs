@@ -5,6 +5,7 @@
     if (is_category() || page.type === "categories") type = "categories";
     if (is_tag() || page.type === "tags") type = "tags";
     if (page.type === "novel") type = "novel";
+    if (page.type === "admin") type = "admin";
     if (is_archive()) type = "archives";
     let title = page.title + " | " + config.title;
     if (is_home()) title = config.title;
@@ -125,6 +126,9 @@
     <script src="<%- url_for("/js/main.js") %>"></script>
     <% if (type === "post" && page.comments) { %>
     <%- partial("comment") %>
+    <% } %>
+    <% if (type === "admin") { %>
+    <script src="<%- url_for("/js/lib/admin.js") %>"></script>
     <% } %>
 </body>
 </html>

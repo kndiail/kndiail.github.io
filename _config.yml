@@ -122,6 +122,14 @@ music:
   fixed: true                  # floating bottom-right player
   volume: 0.7
 
+# Admin dashboard (visit /admin/ to access, no visible nav link)
+## password: plaintext is compared via SHA-256 on the client.
+## NOTE: client-side auth is obfuscation only (not a real security
+## boundary) because static hosting has no backend. Change it before use.
+admin:
+  enable: true
+  password: admin123
+
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
