@@ -225,6 +225,7 @@ hexo.extend.filter.register("after_render:html", function (html) {
         var el = document.querySelector('meting-js');
         if (!el || !el.aplayer) { setTimeout(tryPlay, 400); return; }
         var ap = el.aplayer;
+        cachedAp = ap;
         var audios = ap.list && ap.list.audios;
         if (!audios || !audios.length) { setTimeout(tryPlay, 400); return; }
         pending = true;
@@ -266,8 +267,12 @@ hexo.extend.filter.register("after_render:html", function (html) {
       })();
 
       function savePlayerState() {
-        var el = document.querySelector('meting-js');
-        var ap = el && el.aplayer ? el.aplayer : null;
+        // Prefer the cached APlayer instance (reliable even if the DOM is
+        // being torn down during navigation/pagehide), fall back to DOM.
+        var ap = cachedAp || (function () {
+          var el = document.querySelector('meting-js');
+          return el && el.aplayer ? el.aplayer : null;
+        })();
         if (!ap || !ap.audio) return;
         try {
           sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -299,6 +304,7 @@ hexo.extend.filter.register("after_render:html", function (html) {
           setTimeout(tryRestore, 400);
           return;
         }
+        cachedAp = ap;
         restorePending = false;
         var st = pageFromStorage;
         var idx = st && typeof st.index === 'number' ? st.index : 0;
@@ -361,9 +367,14 @@ hexo.extend.filter.register("after_render:html", function (html) {
          plus on visibilitychange/pagehide as backstops. Resume on the
          new page is delayed so the old page has time to stop. */
       var wasPlayingOnHide = false;
+      var cachedAp = null;
       function currentAp() {
+        // Prefer the cached instance; fall back to querying the DOM.
+        if (cachedAp) return cachedAp;
         var el = document.querySelector('meting-js');
-        return el && el.aplayer ? el.aplayer : null;
+        var ap = el && el.aplayer ? el.aplayer : null;
+        if (ap) cachedAp = ap;
+        return ap;
       }
       function stopAudio() {
         var ap = currentAp();
@@ -371,8 +382,7 @@ hexo.extend.filter.register("after_render:html", function (html) {
           wasPlayingOnHide = !ap.audio.paused && !ap.audio.ended;
           try { ap.pause(); } catch (e) {}
           // Save immediately so sessionStorage holds the true progress
-          // (beforeunload is unreliable for saving; the 5s interval may
-          // have stored an older position).
+          // (beforeunload is unreliable; the 5s interval may be stale).
           savePlayerState();
         }
       }
