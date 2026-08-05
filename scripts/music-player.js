@@ -222,6 +222,7 @@ hexo.extend.filter.register("after_render:html", function (html) {
         try { p = ap.play(); } catch (e) { p = Promise.reject(e); }
         Promise.resolve(p).then(function () {
           started = true; pending = false;
+          window.__musicEverStarted = true;
         }, function () {
           pending = false;
           setTimeout(tryPlay, 600);
@@ -240,52 +241,92 @@ hexo.extend.filter.register("after_render:html", function (html) {
         document.addEventListener(evt, onFirstInteraction);
       });
 
-      /* --- continuous playback across tab switches --- */
-      /* Browsers throttle/pause audio when the tab is hidden. We want
-         music to keep playing across tab switches.
-         Strategy: whenever the audio pauses, we remember it; when the
-         page becomes visible again, if the audio was interrupted by a
-         browser throttle (tab hidden) rather than a user pause, resume.
-         To tell those apart reliably regardless of event ordering:
-         - a pause that happens while the page is already hidden, OR
-         - a pause followed (within ~1s) by the page hiding,
-         both indicate browser throttling → resume on return.
-         A user pause keeps the page visible and is not followed by a
-         hide, so we leave it paused. */
-      var resumeOnVisible = false;
-      var hideTimer = null;
-      function setupContinuousPlayback() {
+      /* --- keep music playing across in-site page navigation --- */
+      /* The theme navigates between pages with normal <a> links, so
+         every page visit reloads the page and rebuilds the player,
+         which resets playback to the first song from the start.
+         To keep music playing continuously across these navigations we
+         save the current song index + progress + playing state to
+         sessionStorage before the page unloads, then restore it once
+         the next page's player is ready. */
+      var STORAGE_KEY = 'musicPlayerState';
+      var pageFromStorage = (function () {
+        try { return JSON.parse(sessionStorage.getItem(STORAGE_KEY)); }
+        catch (e) { return null; }
+      })();
+
+      function savePlayerState() {
         var el = document.querySelector('meting-js');
         var ap = el && el.aplayer ? el.aplayer : null;
-        if (!ap || !ap.audio) { setTimeout(setupContinuousPlayback, 400); return; }
-        var audio = ap.audio;
-        audio.addEventListener('pause', function () {
-          // If already hidden → browser throttled us.
-          if (document.visibilityState === 'hidden') {
-            resumeOnVisible = true;
-            return;
-          }
-          // If visible, wait briefly: a browser throttle pauses the audio
-          // right around when the tab hides. If the page hides within a
-          // short window, treat this pause as throttling.
-          clearTimeout(hideTimer);
-          hideTimer = setTimeout(function () {
-            if (document.visibilityState === 'hidden') {
-              resumeOnVisible = true;
-            }
-          }, 600);
-        });
-        document.addEventListener('visibilitychange', function () {
-          if (document.visibilityState === 'visible') {
-            clearTimeout(hideTimer);
-            if (resumeOnVisible && audio.paused && !audio.ended) {
-              ap.play().catch(function () {});
-            }
-            resumeOnVisible = false;
-          }
-        });
+        if (!ap || !ap.audio) return;
+        try {
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+            index: ap.list && ap.list.index !== undefined ? ap.list.index : 0,
+            currentTime: ap.audio.currentTime || 0,
+            /* hasStarted: has the user ever started playback? Once true,
+               we keep resuming across navigations. We deliberately do NOT
+               trust the paused flag at unload time — during navigation the
+               audio is often already paused by the browser, so checking
+               paused there would wrongly record "user stopped". */
+            hasStarted: window.__musicEverStarted || !ap.audio.paused || ap.audio.currentTime > 0,
+            ts: Date.now()
+          }));
+        } catch (e) {}
       }
-      setupContinuousPlayback();
+
+      /* Save state on unload (page navigation / refresh). */
+      window.addEventListener('beforeunload', savePlayerState);
+      /* Also save periodically so a crash doesn't lose the position. */
+      setInterval(savePlayerState, 5000);
+
+      /* Restore state once the player + playlist are ready. */
+      var restorePending = pageFromStorage ? true : false;
+      function tryRestore() {
+        if (!restorePending) return;
+        var el = document.querySelector('meting-js');
+        var ap = el && el.aplayer ? el.aplayer : null;
+        if (!ap || !ap.list || !ap.list.audios || !ap.list.audios.length) {
+          setTimeout(tryRestore, 400);
+          return;
+        }
+        restorePending = false;
+        var st = pageFromStorage;
+        var idx = st && typeof st.index === 'number' ? st.index : 0;
+        var time = st && typeof st.currentTime === 'number' ? st.currentTime : 0;
+        var shouldPlay = st && st.hasStarted;
+        /* Clamp index to playlist length. */
+        idx = Math.max(0, Math.min(idx, ap.list.audios.length - 1));
+        try {
+          if (ap.list.index !== idx) ap.list.switch(idx);
+        } catch (e) {}
+        /* APlayer loads audio asynchronously; seek once it can. */
+        function doSeek() {
+          if (ap.audio && !isNaN(ap.audio.duration) && ap.audio.duration > 0) {
+            try { ap.seek(Math.min(time, ap.audio.duration - 0.5)); } catch (e) {}
+          } else {
+            setTimeout(doSeek, 300);
+          }
+        }
+        setTimeout(doSeek, 300);
+        /* Resume if it was playing (user gesture required, so hook into
+           the first-interaction handler). We optimistically try to play
+           right away too — if the browser allows it (e.g. after a link
+           click the gesture may still be valid), it starts immediately;
+           otherwise it starts on the next user interaction. */
+        if (shouldPlay) {
+          var resume = function () {
+            window.__musicEverStarted = true;
+            try { ap.play().catch(function () {}); } catch (e) {}
+          };
+          setTimeout(resume, 500);
+          /* Wait for first user interaction to satisfy autoplay policy. */
+          document.addEventListener('pointerdown', resume, { once: true });
+          document.addEventListener('click', resume, { once: true });
+          document.addEventListener('keydown', resume, { once: true });
+          document.addEventListener('touchstart', resume, { once: true });
+        }
+      }
+      tryRestore();
 
       /* --- fix APlayer fixed-mode body width ---
          APlayer writes body.style.width = offsetWidth - 18 on init,
