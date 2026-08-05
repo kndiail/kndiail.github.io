@@ -73,10 +73,6 @@ menu:
     name: house
     theme: solid
     link: /
-  小说:
-    name: book
-    theme: solid
-    link: /novel/
   关于:
     name: id-card
     theme: solid
