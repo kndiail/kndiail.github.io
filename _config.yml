@@ -110,6 +110,8 @@ theme: loststar
 # Music player (floating APlayer + Meting)
 ## Autoplay note: browsers block audio without user interaction,
 ## so playback starts on the user's first click anywhere on the page.
+## Continuous playback: when the tab becomes visible again after being
+## hidden, playback resumes automatically (unless user paused manually).
 ## Replace `playlistId` with your own netease playlist id.
 music:
   enable: true
