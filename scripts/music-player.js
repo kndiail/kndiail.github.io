@@ -28,7 +28,6 @@ hexo.extend.filter.register("after_render:html", function (html) {
   const api =
     cfg.api ||
     "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&r=:r";
-  const autoplay = cfg.autoplay !== false;
   const fixed = cfg.fixed !== false;
   const volume = typeof cfg.volume === "number" ? cfg.volume : 0.7;
 
@@ -38,7 +37,10 @@ hexo.extend.filter.register("after_render:html", function (html) {
     id: JSON.stringify(String(cfg.playlistId)),
     api: JSON.stringify(api),
     fixed: fixed ? "true" : "false",
-    autoplay: autoplay ? "true" : "false",
+    // autoplay is handled by the injected first-click logic below.
+    // Keep the meting-js attribute false to avoid the browser rejecting
+    // a play() on load (which would also log a console error).
+    autoplay: "false",
     theme: "'#66afef'",
     order: "'list'",
     preload: "'auto'",
@@ -80,22 +82,36 @@ hexo.extend.filter.register("after_render:html", function (html) {
     "      if (window.__musicPlayerInjected) return;\n" +
     "      window.__musicPlayerInjected = true;\n" +
     "      var started = false;\n" +
+    "      var pending = false;\n" +
     "      function tryPlay() {\n" +
-    "        if (started) return;\n" +
+    "        if (started || pending) return;\n" +
     "        var el = document.querySelector('meting-js');\n" +
-    "        if (!el || !el.aplayer) { setTimeout(tryPlay, 500); return; }\n" +
+    "        if (!el || !el.aplayer) { setTimeout(tryPlay, 400); return; }\n" +
     "        var ap = el.aplayer;\n" +
-    "        if (ap && ap.list && ap.list.length) { started = true; ap.play(); }\n" +
-    "        else { setTimeout(tryPlay, 500); }\n" +
+    "        var audios = ap.list && ap.list.audios;\n" +
+    "        if (!audios || !audios.length) { setTimeout(tryPlay, 400); return; }\n" +
+    "        pending = true;\n" +
+    "        var p;\n" +
+    "        try { p = ap.play(); } catch (e) { p = Promise.reject(e); }\n" +
+    "        Promise.resolve(p).then(function () {\n" +
+    "          started = true; pending = false;\n" +
+    "        }, function () {\n" +
+    "          pending = false;\n" +
+    "          setTimeout(tryPlay, 600);\n" +
+    "        });\n" +
     "      }\n" +
-    "      var fired = false;\n" +
-    "      function onFirstClick() {\n" +
-    "        if (fired) return;\n" +
-    "        fired = true;\n" +
-    "        document.removeEventListener('click', onFirstClick);\n" +
-    "        setTimeout(tryPlay, 300);\n" +
+    "      function onFirstInteraction() {\n" +
+    "        if (started) {\n" +
+    "          ['click', 'pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {\n" +
+    "            document.removeEventListener(evt, onFirstInteraction);\n" +
+    "          });\n" +
+    "          return;\n" +
+    "        }\n" +
+    "        tryPlay();\n" +
     "      }\n" +
-    "      document.addEventListener('click', onFirstClick);\n" +
+    "      ['click', 'pointerdown', 'keydown', 'touchstart'].forEach(function (evt) {\n" +
+    "        document.addEventListener(evt, onFirstInteraction);\n" +
+    "      });\n" +
     "    })();\n" +
     "  </script>\n" +
     "</body>";
