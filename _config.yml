@@ -4,9 +4,9 @@
 
 # Site
 title: 榭樱迹雪のBlog
-subtitle: ''
-description: ''
-keywords:
+subtitle: '记录技术学习与生活随笔的个人博客'
+description: 'Kndiail 的个人博客，记录技术学习、开发实践与生活思考。'
+keywords: 'Kndiail, Hexo, 博客, 技术, 前端, 开发'
 author: Kndiail
 language: cn
 timezone: 'asia/shanghai'
@@ -69,6 +69,14 @@ index_generator:
 default_category: uncategorized
 category_map:
 tag_map:
+
+# Archive generator (matches loststar theme expectations)
+archive_generator:
+  enabled: true
+  per_page: 0
+  yearly: false
+  monthly: false
+  daily: false
 
 # Metadata elements
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
