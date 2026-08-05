@@ -39,8 +39,8 @@ const PLAYER_CSS = `
    width, so padding/border skew that measurement and squash the info
    panel. Use box-shadow to simulate a border instead. */
 .aplayer.aplayer-fixed .aplayer-body {
-  left: auto !important;
-  right: 18px !important;
+  right: auto !important;
+  left: 18px !important;
   bottom: 18px !important;
   max-width: 340px;
   border-radius: 16px;
