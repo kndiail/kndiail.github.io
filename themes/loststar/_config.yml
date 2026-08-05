@@ -5,8 +5,10 @@
 avatar: /images/avatar.png
 
 # Home page background image
+# background-mobile.jpg (if present) is picked on small screens.
 background:
   - /images/background.jpg
+  - /images/background-mobile.jpg
 
 # Loading image
 loading: /images/loading.gif

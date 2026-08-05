@@ -21,14 +21,38 @@
     }
   }
 
+  var darkLink = null;
+  function ensureDarkLink() {
+    if (darkLink) return darkLink;
+    darkLink = document.createElement("link");
+    darkLink.rel = "stylesheet";
+    darkLink.id = "hl-dark";
+    darkLink.href =
+      "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css";
+    document.head.appendChild(darkLink);
+    return darkLink;
+  }
+
   function apply(mode) {
     var theme = resolveTheme(mode);
     document.documentElement.setAttribute("data-theme", theme);
-    // highlight.js: enable the matching stylesheet
+    // highlight.js: only load the matching stylesheet.
     var light = document.getElementById("hl-light");
-    var dark = document.getElementById("hl-dark");
-    if (light) light.disabled = theme !== "light";
-    if (dark) dark.disabled = theme !== "dark";
+    if (theme === "dark") {
+      if (light) light.remove();
+      ensureDarkLink();
+    } else {
+      if (darkLink && darkLink.parentNode) darkLink.parentNode.removeChild(darkLink);
+      darkLink = null;
+      if (!light) {
+        light = document.createElement("link");
+        light.rel = "stylesheet";
+        light.id = "hl-light";
+        light.href =
+          "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+        document.head.appendChild(light);
+      }
+    }
   }
 
   var mode = "system";

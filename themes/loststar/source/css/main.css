@@ -63,6 +63,7 @@
 /* ====== Stars Canvas ====== */
 #stars-canvas {
   height: 100vh;
+  height: 100dvh;
   left: 0;
   pointer-events: none;
   position: fixed;
@@ -174,6 +175,8 @@
 #home-head {
   display: flex;
   height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   width: 100%;
 }
 #home-head #home-background {
@@ -181,6 +184,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
+  height: 100dvh;
   left: 0;
   position: absolute;
   top: 0;
@@ -374,6 +378,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: 100dvh;
   justify-content: center;
   left: 0;
   position: fixed;
@@ -896,6 +901,9 @@ code,
 }
 table:not(.hljs-ln) {
   margin: 15px 0;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
 }
 table:not(.hljs-ln) td:nth-child(even) {
   background: #c7e0fb4d;
@@ -1288,7 +1296,7 @@ ol li {
 }
 .article {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 100px auto 0;
 }
 .article .content p {
   margin: 0 0 1.1em;
@@ -1468,4 +1476,61 @@ html[data-theme="dark"] .chapter-nav {
 html[data-theme="dark"] .article .content {
   color: #d8dee9;
 }
+
+/* ===== Mobile (<480px) ===== */
+@media (max-width: 480px) {
+  #main {
+    margin-right: 0;
+  }
+  #home-head #home-info,
+  #home-head #home-info .info,
+  #home-head #home-info .loop {
+    height: min(90vw, 350px);
+    width: min(90vw, 350px);
+  }
+  #home-head #home-info .info .wrap h1 {
+    font-size: clamp(28px, 8vw, 46px);
+  }
+  #home-head #home-info .info .wrap h3 {
+    font-size: clamp(16px, 5vw, 20px);
+  }
+  #home-head #home-info .info .wrap h5 {
+    font-size: clamp(12px, 4vw, 14px);
+  }
+  #home-posts .post {
+    padding: 16px 20px;
+  }
+  .article {
+    margin-top: 60px;
+    padding: 0 12px;
+  }
+  #archives {
+    padding: 16px 12px;
+  }
+  .chapter-toc-list li a {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  .pager-btn {
+    padding: 10px 12px;
+  }
+  .novel-list {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .novel-item {
+    padding: 12px 14px;
+  }
+  .theme-toggle {
+    right: 12px;
+    bottom: 88px;
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  .reading-stats {
+    margin: 14px 0 6px;
+    padding: 4px 12px;
+    font-size: 12px;
+  }
 }

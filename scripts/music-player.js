@@ -119,6 +119,17 @@ const PLAYER_CSS = `
 .aplayer.aplayer-fixed.aplayer-narrow .aplayer-pic {
   border-radius: 50%;
 }
+/* Mobile: keep the player inside the viewport */
+@media (max-width: 480px) {
+  .aplayer.aplayer-fixed .aplayer-body {
+    left: 12px !important;
+    bottom: 12px !important;
+    max-width: calc(100vw - 24px);
+  }
+  .aplayer.aplayer-fixed .aplayer-list {
+    max-height: 180px !important;
+  }
+}
 html[data-theme="dark"] {
   --mp-body-bg: rgba(24, 26, 32, 0.88);
   --mp-body-border: rgba(255, 255, 255, 0.08);

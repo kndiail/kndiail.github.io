@@ -14,6 +14,11 @@ const app = Vue.createApp({
         window.addEventListener("load", () => {
             this.loading = false;
         });
+        // Fallback: never keep the loading screen up forever (e.g. a slow
+        // or blocked CDN resource can delay the window load event).
+        setTimeout(() => {
+            this.loading = false;
+        }, 4000);
     },
     mounted() {
         window.addEventListener("scroll", this.handleScroll, true);
