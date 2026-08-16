@@ -7,20 +7,27 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body { height: 100%; }
+  html { height: 100%; overflow-y: auto; overflow-x: hidden; }
 
   body {
     font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Segoe UI", sans-serif;
     background:
       radial-gradient(ellipse at 50% 115%, #1b2a5e 0%, transparent 62%),
       linear-gradient(180deg, #020312 0%, #060b26 40%, #101b45 100%);
-    min-height: 100vh;
+    min-height: 100%;
+    min-height: 100dvh;
     display: flex;
-    align-items: center;
+    /* 不用 align-items:center：内容超高时顶部会被裁掉且滚不回来，
+       改用 margin:auto 的安全居中（见 .card） */
+    align-items: flex-start;
     justify-content: center;
-    overflow: auto;
+    overflow-x: hidden;
+    /* 顶部/底部留白 + iPhone 刘海/底部安全区 */
+    padding-top: max(18px, env(safe-area-inset-top, 0px));
+    padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
     color: #fff;
     text-align: center;
+    -webkit-text-size-adjust: 100%;
     -webkit-user-select: none;
     user-select: none;
   }
@@ -120,7 +127,9 @@
     position: relative;
     z-index: 2;
     width: min(680px, 92vw);
-    margin: 30px auto;
+    max-width: 100%;
+    /* 安全居中：空间够时垂直居中，内容超高时自动顶部对齐、可完整滚动 */
+    margin: auto;
     padding: 44px 30px 40px;
     background: rgba(13, 20, 50, .55);
     border: 1px solid rgba(140, 170, 255, .28);
@@ -337,7 +346,7 @@
   }
   .gift {
     position: relative;
-    width: 140px;
+    width: 160px;
     height: 150px;
     cursor: pointer;
     opacity: 0;
@@ -422,9 +431,9 @@
   }
 
   /* ---------- 生日签 ---------- */
-  .draw { opacity: 0; animation: riseIn .9s ease 2.1s forwards; }
+  .draw { width: 160px; opacity: 0; animation: riseIn .9s ease 2.1s forwards; }
   .draw-card {
-    width: 180px; height: 112px;
+    width: 160px; height: 112px;
     margin: 12px auto 0;
     perspective: 700px;
   }
@@ -553,8 +562,20 @@
 
   @media (max-width: 480px) {
     .cake { transform: scale(.82); }
-    .cake-zone { width: 230px; height: 205px; }
-    .card { padding: 32px 16px 32px; }
+    .cake-zone { width: 230px; height: 205px; margin: 24px auto 4px; }
+    .card { padding: 30px 14px 30px; }
+    .todayline { font-size: .85rem; }
+    .wish { margin-top: 18px; }
+    .buttons { margin-top: 18px; }
+    .buttons button { font-size: .95rem; padding: 12px 20px; }
+    .extras { gap: 18px 0; margin-top: 20px; }
+    .draw-card { height: 106px; }
+    .gift { height: 142px; }
+    .wish-form { margin-top: 18px; }
+    .wish-form input { font-size: 16px; } /* 防止 iOS 聚焦输入框时自动放大页面 */
+    .wish-note { font-size: .85rem; }
+    .player { margin-top: 20px; }
+    .footer { margin-top: 20px; }
   }
 </style>
 </head>
