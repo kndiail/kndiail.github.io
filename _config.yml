@@ -29,7 +29,9 @@ archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
+# 独立 HTML 页面：跳过 Hexo 渲染（含主题布局与注入脚本），原样发布
 skip_render:
+  - birthday-card.html
 
 # Writing
 new_post_name: :title.md # File name of new posts
