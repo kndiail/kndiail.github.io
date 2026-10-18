@@ -1724,3 +1724,156 @@ html[data-theme="dark"] .reader-btn {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================
+   Dark mode adaptation pass 2
+   Fix low-contrast text, light-only cards/inputs/tables, and
+   inline taxonomy colors (inline style beats CSS -> !important)
+   ============================================================ */
+
+/* headings that missed the first dark pass */
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6 {
+  color: #d8dee9;
+}
+html[data-theme="dark"] #home-head #home-info .info .wrap h5 {
+  color: #4a4a4a;
+}
+
+/* inline code & code blocks (keep .hljs background from the
+   highlight.js dark stylesheet untouched) */
+html[data-theme="dark"] code:not(.hljs) {
+  background: rgba(120, 145, 195, 0.22);
+  color: #d8dee9;
+}
+html[data-theme="dark"] pre {
+  border-color: #2c313a;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+html[data-theme="dark"] .copycode {
+  color: #9aa3af;
+}
+html[data-theme="dark"] .hljs-ln-numbers {
+  border-right-color: #2c313a;
+  color: #5b6472;
+}
+
+/* blockquote */
+html[data-theme="dark"] blockquote {
+  background: rgba(66, 82, 120, 0.22);
+  border-left-color: #5b7fc7;
+}
+
+/* tables */
+html[data-theme="dark"] table:not(.hljs-ln) td:nth-child(even) {
+  background: rgba(66, 82, 120, 0.14);
+}
+html[data-theme="dark"] table:not(.hljs-ln) td:nth-child(odd) {
+  background: rgba(66, 82, 120, 0.26);
+}
+html[data-theme="dark"] table:not(.hljs-ln) th {
+  background: #2c3648;
+  color: #e2e8f0;
+}
+
+/* timeline cards on archives / tags / categories pages (were white) */
+html[data-theme="dark"] .timeline-content {
+  background: #1a1d24;
+  border-color: #2c313a;
+}
+html[data-theme="dark"] .timeline-content:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+html[data-theme="dark"] .timeline-tail {
+  background: #1f232c;
+  border-color: #5b7fc7;
+}
+
+/* search / admin inputs (were light grey with black text) */
+html[data-theme="dark"] .input {
+  background: #1f232c;
+  border-color: #2c313a;
+  color: #d8dee9;
+}
+html[data-theme="dark"] .input:hover,
+html[data-theme="dark"] .input:focus {
+  background: #232833;
+  border-color: #3b6fc4;
+}
+
+/* loading screen & image preview overlay (were cream/white) */
+html[data-theme="dark"] #loading {
+  background: #12151b;
+}
+html[data-theme="dark"] #preview {
+  background-color: rgba(10, 12, 16, 0.85);
+}
+html[data-theme="dark"] #preview-content {
+  box-shadow: 0 0 50px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* pagination current marker (was dark navy) */
+html[data-theme="dark"] #home-posts .page-current .current {
+  color: #9cc0ef;
+}
+
+/* small greys hardcoded for the light theme */
+html[data-theme="dark"] #archives a,
+html[data-theme="dark"] #archives .item-time,
+html[data-theme="dark"] #archives .tag-icon,
+html[data-theme="dark"] .article .info .date,
+html[data-theme="dark"] .icon {
+  color: #9aa3af;
+}
+html[data-theme="dark"] .article[data-category] .info .date,
+html[data-theme="dark"] .article[data-category] .info a {
+  opacity: 1;
+}
+
+/* inline taxonomy colors (category/tag links) are dark greys tuned
+   for light cards -> dark-on-dark without this override */
+html[data-theme="dark"] .article .info .category a,
+html[data-theme="dark"] .article .info .tags a,
+html[data-theme="dark"] #home-posts .post .category-and-date .category a,
+html[data-theme="dark"] #home-posts .post .post-tags a,
+html[data-theme="dark"] .timeline-content .category a,
+html[data-theme="dark"] .timeline-content .tags a {
+  color: #9fb3c8 !important;
+}
+
+/* taxonomy chips on /tags/ & /categories/ (inline pastel bg/text) */
+html[data-theme="dark"] #archives .categories-tags span a {
+  background: #232833 !important;
+  border-color: #3a4150 !important;
+  color: #c8d6e5 !important;
+}
+html[data-theme="dark"] #archives .categories-tags span a:hover {
+  background: #2c313a !important;
+  border-color: #5b7fc7 !important;
+  color: #e2e8f0 !important;
+}
+html[data-theme="dark"] #archives .categories-tags span a:hover .icon {
+  color: #e2e8f0;
+}
+
+/* scrollbars (the * rule wins over html by direct application) */
+html[data-theme="dark"] * {
+  scrollbar-color: #4c6a9f #1a1d24;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #4c6a9f
+    linear-gradient(
+      45deg,
+      #fff3 25%,
+      transparent 25%,
+      transparent 50%,
+      #fff3 50%,
+      #fff3 75%,
+      transparent 75%,
+      transparent
+    );
+  border: 3px solid #1a1d24;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #1a1d24;
+}
