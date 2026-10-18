@@ -16,10 +16,10 @@ const path = require("path");
 
 function escapeHtml(str) {
 	return String(str)
-		.replace(/&/g, "&")
-		.replace(/</g, "<")
-		.replace(/>/g, ">")
-		.replace(/"/g, """);
+		.replace(/&/g, "\u0026")
+		.replace(/</g, "\u003C")
+		.replace(/>/g, "\u003E")
+		.replace(/"/g, "\u0022");
 }
 
 hexo.extend.generator.register("legacy_post_redirects", function (locals) {
