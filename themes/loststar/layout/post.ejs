@@ -102,6 +102,14 @@
         <span class="icon"><i class="fa-solid fa-align-left fa-fw"></i></span>
         约 <%= (wordCount / 1000).toFixed(1) %> 千字 · 约 <%= readMin %> 分钟
     </div>
+    <div class="reader-controls" role="group" aria-label="阅读设置">
+        <span class="reader-label">阅读设置</span>
+        <button type="button" class="reader-btn" data-reader="font-dec" title="缩小字号">A−</button>
+        <button type="button" class="reader-btn" data-reader="font-inc" title="放大字号">A+</button>
+        <button type="button" class="reader-btn" data-reader="line-height" title="切换行距">行距</button>
+        <span class="reader-value">100% · 标准</span>
+        <button type="button" class="reader-btn" data-reader="reset" title="恢复默认">重置</button>
+    </div>
     <%
         // Chapter navigation (prev / next / TOC) for 连载小说
         const nav = getChapterNav(page);

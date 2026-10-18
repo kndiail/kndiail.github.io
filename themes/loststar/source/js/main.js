@@ -96,3 +96,58 @@ app.mount("#layout");
         toggle.classList.toggle("open");
     });
 })();
+
+// Reader settings: font scale + line height, persisted in localStorage
+(function readerSettings() {
+    const FONT_KEY = "readerFontScale";
+    const LH_KEY = "readerLineHeight";
+    const FONT_STEPS = [0.85, 0.95, 1, 1.1, 1.2, 1.35, 1.5];
+    const LH_STEPS = [1, 1.15, 1.3];
+    const LH_NAMES = ["紧凑", "标准", "宽松"];
+
+    function clampStep(steps, value, fallback) {
+        const v = parseFloat(value);
+        return steps.indexOf(v) !== -1 ? v : fallback;
+    }
+    function getFont() {
+        return clampStep(FONT_STEPS, localStorage.getItem(FONT_KEY), 1);
+    }
+    function getLh() {
+        return clampStep(LH_STEPS, localStorage.getItem(LH_KEY), 1);
+    }
+    function updateLabel() {
+        const el = document.querySelector(".reader-value");
+        if (!el) return;
+        el.textContent =
+            Math.round(getFont() * 100) + "% · " + LH_NAMES[LH_STEPS.indexOf(getLh())];
+    }
+    function apply() {
+        const root = document.documentElement;
+        root.style.setProperty("--reader-scale", getFont());
+        root.style.setProperty("--reader-lh", getLh());
+        updateLabel();
+    }
+    apply();
+
+    document.addEventListener("click", (e) => {
+        const btn = e.target && e.target.closest && e.target.closest("[data-reader]");
+        if (!btn) return;
+        const action = btn.getAttribute("data-reader");
+        if (action === "font-dec" || action === "font-inc") {
+            const cur = getFont();
+            const i = FONT_STEPS.indexOf(cur);
+            const next = FONT_STEPS[Math.min(FONT_STEPS.length - 1, Math.max(0, i + (action === "font-inc" ? 1 : -1)))];
+            localStorage.setItem(FONT_KEY, next);
+        } else if (action === "line-height") {
+            const cur = getLh();
+            const next = LH_STEPS[(LH_STEPS.indexOf(cur) + 1) % LH_STEPS.length];
+            localStorage.setItem(LH_KEY, next);
+        } else if (action === "reset") {
+            localStorage.removeItem(FONT_KEY);
+            localStorage.removeItem(LH_KEY);
+        } else {
+            return;
+        }
+        apply();
+    });
+})();

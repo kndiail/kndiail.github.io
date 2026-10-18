@@ -16,6 +16,10 @@ mixins.stars = {
 		let stars = [];
 		const shootingStars = [];
 		let animId = null;
+		// 尊重系统「减少动态效果」：只画静态星空，不闪烁、不出流星
+		const reduceMotion =
+			typeof window.matchMedia === "function" &&
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 		// --- Config ---
 		const STAR_COUNT = 90;
@@ -154,7 +158,9 @@ mixins.stars = {
 		}
 
 		// Spawn shooting stars periodically
-		const shootingTimer = setInterval(() => {
+		const shootingTimer = reduceMotion
+			? null
+			: setInterval(() => {
 			if (shootingStars.length < MAX_SHOOTING_STARS) {
 				shootingStars.push(createShootingStar());
 				if (
@@ -168,6 +174,7 @@ mixins.stars = {
 
 		// Visibility API — pause when tab is hidden
 		const onVisibility = () => {
+			if (reduceMotion) return;
 			if (document.hidden) {
 				cancelAnimationFrame(animId);
 				animId = null;
@@ -193,7 +200,22 @@ mixins.stars = {
 
 		// Start
 		init();
-		animate();
+		if (reduceMotion) {
+			// Static starfield: draw once, no twinkle / drift / shooting stars
+			ctx.clearRect(0, 0, w, h);
+			for (const s of stars) {
+				ctx.beginPath();
+				ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI * 2);
+				ctx.fillStyle = s.color + s.alpha * 0.15 + ")";
+				ctx.fill();
+				ctx.beginPath();
+				ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+				ctx.fillStyle = s.color + s.alpha + ")";
+				ctx.fill();
+			}
+		} else {
+			animate();
+		}
 
 		// Cleanup on unmount
 		this._starsCleanup = () => {
